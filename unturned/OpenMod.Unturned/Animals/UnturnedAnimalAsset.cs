@@ -11,8 +11,8 @@ namespace OpenMod.Unturned.Animals
         public UnturnedAnimalAsset(AnimalAsset animalAsset)
         {
             AnimalAsset = animalAsset;
-            Name = animalAsset.animalName;
-            EntityAssetId = animalAsset.id.ToString();
+            Name = animalAsset.FriendlyName;
+            EntityAssetId = animalAsset.GUID.ToString("N");
             EntityType = UnturnedEntityTypes.Animal;
         }
 

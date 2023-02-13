@@ -25,7 +25,7 @@ namespace OpenMod.Unturned.Building
         protected UnturnedBuildableAsset(Asset asset)
         {
             Asset = asset ?? throw new ArgumentNullException(nameof(asset));
-            BuildableAssetId = asset.id.ToString();
+            BuildableAssetId = asset.GUID.ToString("N");
 
             BuildableType = asset switch
             {

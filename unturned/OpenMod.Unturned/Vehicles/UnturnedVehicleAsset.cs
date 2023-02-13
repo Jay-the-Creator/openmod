@@ -11,8 +11,8 @@ namespace OpenMod.Unturned.Vehicles
         public UnturnedVehicleAsset(VehicleAsset vehicleAsset)
         {
             VehicleAsset = vehicleAsset;
-            VehicleAssetId = vehicleAsset.id.ToString();
-            VehicleName = vehicleAsset.vehicleName ?? VehicleAssetId;
+            VehicleAssetId = vehicleAsset.GUID.ToString("N");
+            VehicleName = vehicleAsset.FriendlyName ?? VehicleAssetId;
             VehicleType = vehicleAsset.engine.ToString().ToLower(CultureInfo.InvariantCulture);
         }
 

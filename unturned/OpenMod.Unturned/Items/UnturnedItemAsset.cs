@@ -13,9 +13,9 @@ namespace OpenMod.Unturned.Items
             ItemAsset = itemAsset;
         }
 
-        public string ItemAssetId => ItemAsset.id.ToString();
+        public string ItemAssetId => ItemAsset.GUID.ToString("N");
 
-        public string ItemName => ItemAsset.itemName ?? ItemAssetId;
+        public string ItemName => ItemAsset.FriendlyName ?? ItemAssetId;
 
         public string ItemType => ItemAsset.type.ToString().ToLower(CultureInfo.InvariantCulture);
 
