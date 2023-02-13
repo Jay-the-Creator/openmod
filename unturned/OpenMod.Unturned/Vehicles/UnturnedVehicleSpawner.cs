@@ -1,13 +1,14 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using OpenMod.API.Ioc;
 using OpenMod.Extensions.Games.Abstractions.Players;
 using OpenMod.Extensions.Games.Abstractions.Transforms;
 using OpenMod.Extensions.Games.Abstractions.Vehicles;
 using OpenMod.UnityEngine.Extensions;
+using OpenMod.Unturned.AssetHelpers;
 using SDG.Unturned;
 using Steamworks;
-using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using Priority = OpenMod.API.Prioritization.Priority;
 using Quaternion = System.Numerics.Quaternion;
@@ -25,12 +26,14 @@ namespace OpenMod.Unturned.Vehicles
             async UniTask<IVehicle?> SpawnVehicleTask()
             {
                 await UniTask.SwitchToMainThread();
-                if (!ushort.TryParse(vehicleAssetId, out var parsedVehicleId))
+
+                if (!AssetId.TryParse(vehicleAssetId, out var parsedVehicleId))
                 {
                     throw new Exception($"Invalid vehicle id: {vehicleAssetId}");
                 }
 
-                if (Assets.find(EAssetType.VEHICLE, parsedVehicleId) is not VehicleAsset vehicleAsset)
+                var vehicleAsset = parsedVehicleId.FindVehicleAsset();
+                if (vehicleAsset == null)
                 {
                     return null;
                 }
@@ -40,7 +43,7 @@ namespace OpenMod.Unturned.Vehicles
                 {
                     ReadState(state.StateData, out _ /* id doesn't require i guess? */, out var skinId, out var mythicId,
                         out var roadPosition, out var fuel, out var health, out var batteryCharge,
-                        out var owner, out var group, out var locked, out byte[][] turrets,
+                        out var owner, out var group, out var locked, out var turrets,
                         out _, out var tireAliveMask, out var items);
 
                     var iVehicle = VehicleManager.SpawnVehicleV3(vehicleAsset, skinId, mythicId, roadPosition,
@@ -62,8 +65,9 @@ namespace OpenMod.Unturned.Vehicles
                 }
                 else
                 {
-                    var iVehicle = VehicleManager.spawnVehicleV2(parsedVehicleId, position.ToUnityVector(),
-                        Quaternion.Identity.ToUnityQuaternion());
+                    var iVehicle = VehicleManager.SpawnVehicleV3(vehicleAsset, 0, 0, 0f, position.ToUnityVector(),
+                        Quaternion.Identity.ToUnityQuaternion(), sirens: false, blimp: false, headlights: false, taillights: false, vehicleAsset.fuel,
+                        vehicleAsset.health, 10000, CSteamID.Nil, CSteamID.Nil, false, null, byte.MaxValue);
                     if (iVehicle != null)
                     {
                         vehicle = new UnturnedVehicle(iVehicle);
@@ -84,8 +88,8 @@ namespace OpenMod.Unturned.Vehicles
             var forward = (Vector3.UnitZ * 6).Rotate(rotation);
 
             position += forward;
-            
-            Physics.Raycast((position + Vector3.UnitY * 16f).ToUnityVector(), UVector3.down, out var raycastHit, 32f, RayMasks.BLOCK_VEHICLE);
+
+            Physics.Raycast((position + (Vector3.UnitY * 16f)).ToUnityVector(), UVector3.down, out var raycastHit, 32f, RayMasks.BLOCK_VEHICLE);
             if (raycastHit.collider != null)
             {
                 position.Y = raycastHit.point.y + 16f;

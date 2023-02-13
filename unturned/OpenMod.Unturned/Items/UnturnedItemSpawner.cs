@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OpenMod.Unturned.Players.Clothing;
 using Vector3 = System.Numerics.Vector3;
+using OpenMod.Unturned.AssetHelpers;
 
 namespace OpenMod.Unturned.Items
 {
@@ -21,7 +22,7 @@ namespace OpenMod.Unturned.Items
             {
                 ValidateState(state);
 
-                if (!ushort.TryParse(itemId, out var parsedItemId))
+                if (!AssetId.TryParse(itemId, out var assetId))
                 {
                     throw new ArgumentException($"Invalid Item ID: {itemId}", nameof(itemId));
                 }
@@ -29,7 +30,7 @@ namespace OpenMod.Unturned.Items
                 if (inventory is not UnturnedPlayerInventory playerInventory)
                     throw new NotSupportedException($"Inventory type not supported: {inventory.GetType().FullName}");
 
-                var item = CreateItem(parsedItemId, state, out var itemAsset);
+                var item = CreateItem(assetId, state, out var itemAsset);
                 if (item == null || itemAsset == null)
                 {
                     return null;
@@ -45,7 +46,6 @@ namespace OpenMod.Unturned.Items
                 if (itemJar != null)
                 {
                     return new UnturnedInventoryItem(playerInventory, itemJar);
-
                 }
 
                 // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
@@ -193,12 +193,12 @@ namespace OpenMod.Unturned.Items
             {
                 ValidateState(state);
 
-                if (!ushort.TryParse(itemId, out var parsedItemId))
+                if (!AssetId.TryParse(itemId, out var assetId))
                 {
                     throw new ArgumentException($"Invalid Item ID: {itemId}", nameof(itemId));
                 }
 
-                var item = CreateItem(parsedItemId, state, out _);
+                var item = CreateItem(assetId, state, out _);
                 if (item == null)
                 {
                     return null;
@@ -243,9 +243,9 @@ namespace OpenMod.Unturned.Items
             }
         }
 
-        private Item? CreateItem(ushort id, IItemState? state, out ItemAsset? itemAsset)
+        private Item? CreateItem(AssetId assetId, IItemState? state, out ItemAsset? itemAsset)
         {
-            itemAsset = (ItemAsset?)Assets.find(EAssetType.ITEM, id);
+            itemAsset = assetId.FindItemAsset<ItemAsset>();
             if (itemAsset == null || itemAsset.isPro)
             {
                 return null;
