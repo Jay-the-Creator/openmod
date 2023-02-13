@@ -12,6 +12,7 @@ using OpenMod.Core.Permissions;
 using OpenMod.Core.Users;
 using OpenMod.Extensions.Economy.Abstractions;
 using OpenMod.Extensions.Games.Abstractions;
+using OpenMod.Unturned.AssetHelpers;
 using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Configuration;
 using OpenMod.Unturned.Items;
@@ -72,6 +73,7 @@ namespace OpenMod.Unturned
                 options.AddCommandParameterResolveProvider<CSteamIDCommandParameterResolveProvider>();
                 options.AddCommandParameterResolveProvider<UnturnedItemAssetCommandParameterResolveProvider>();
                 options.AddCommandParameterResolveProvider<UnturnedVehicleAssetCommandParameterResolveProvider>();
+                options.AddCommandParameterResolveProvider<AssetIdCommandParameterResolveProvider>();
             });
 
             if (RocketModIntegration.IsRocketModInstalled())
