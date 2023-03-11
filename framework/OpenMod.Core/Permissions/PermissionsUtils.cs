@@ -32,9 +32,9 @@ namespace OpenMod.Core.Permissions
                 .Union(permissionsOfAllCommands)
                 .ToArray();
 
-            return allPermissions
-                .Union(allPermissions.Select(p => '!' + p))
-                .ToHashSet();
+            //fix CS0121 between System.Linq and MoreLinq
+            return MoreEnumerable.ToHashSet(allPermissions
+                .Union(allPermissions.Select(p => '!' + p)));
         }
 
         private static async Task<ISet<string>> GetPermissionsOfAllCommandsAsync(
@@ -42,8 +42,7 @@ namespace OpenMod.Core.Permissions
             ICommandPermissionBuilder commandPermissionBuilder)
         {
             var commands = await commandStore.GetCommandsAsync();
-
-            return commands
+            return MoreEnumerable.ToHashSet(commands
                 .SelectMany(c =>
                 {
                     var permission = commandPermissionBuilder.GetPermission(c, commands);
@@ -54,20 +53,18 @@ namespace OpenMod.Core.Permissions
                     // ReSharper disable once InvokeAsExtensionMethod
                     return MoreEnumerable.Append(permissionRegistrations, permission);
                 })
-                .SelectMany(DefaultPermissionCheckProvider.BuildPermissionTree)
-                .ToHashSet();
+                .SelectMany(DefaultPermissionCheckProvider.BuildPermissionTree));
         }
 
         private static ISet<string> GetPermissionsOfAllComponents(
             IPermissionRegistry permissionRegistry,
             IReadOnlyCollection<IOpenModComponent> openModComponents)
         {
-            return openModComponents
+            return MoreEnumerable.ToHashSet(openModComponents
                 .SelectMany(c => permissionRegistry
                     .GetPermissions(c)
                     .Select(r => c.OpenModComponentId + ':' + r.Permission))
-                .SelectMany(DefaultPermissionCheckProvider.BuildPermissionTree)
-                .ToHashSet();
+                .SelectMany(DefaultPermissionCheckProvider.BuildPermissionTree));
         }
     }
 }
