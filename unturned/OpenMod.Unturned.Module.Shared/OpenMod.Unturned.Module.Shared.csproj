@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\..\props\SharedProjectProps.props" />
@@ -9,14 +9,14 @@
   
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.2.2" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="OpenMod.UnityEngine.Redist" Version="2019.4.10">
 	  <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="OpenMod.Unturned.Redist" Version="3.22.16">
+    <PackageReference Include="OpenMod.Unturned.Redist" Version="3.22.21.4">
 	  <IncludeAssets>compile</IncludeAssets>
     </PackageReference>
   </ItemGroup>
